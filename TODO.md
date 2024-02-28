@@ -20,12 +20,29 @@ Thoughts:
 
 - Ability to select an area manually. This is good for CRPGs and their dialogue boxes. 
     - The system will not look for text within this box if text is already found in it.
+    - A zone is selected that the user wants the program to monitor.
+        - The buttons I mention above appear next to these
+    - A one-off zone that is selected and the text within it played immediately after selection.
+    - A button to show or hide the zones' bounding boxes
+        - Maybe have a setting that allows to set the colour, the brightness and prominence of the bounding boxes.
 - Ability to support continuous text scroll:
     - Text is detected within a box. 
     - The box stays the same but text changes
     - Look for some of that text in the "played" queue.
     - If some of the text is found there then cut the text that has not been played yet and add to the queue after the beginning part so that it's seemless.
 - The refresh rate is maybe 2 times per second but maybe it can be slowed down if it affects performance.
+- Where do the buttons appear around the bounding box. Maybe a setting that allows the person to set it various corners around the bounding box
+    - if the buttons would appear off-screen then change them to the next available position in the pecking order
+- The appearance of the bounding box:
+    - The colour
+    - Maybe some cool animation
+    - The thickness
+- The appearance of the buttons:
+    - size
+    - high contrast
+- Have an always on top button somewhere on screen that enables or disables the system.
+    - It will disable the drawing of bounding boxes.
+
 
 
 Interface algorith:
@@ -71,3 +88,18 @@ Features:
 - choose the voice upon start
 - SSML functionality ?
 - Free trial based on number of characters and not time.
+- Monetisation:
+    - Monthly
+    - Token purchase
+        - I'm leaning more towards this as this is easier to translate to usage. A person might use a lot of tokens quickly if they are blasting through games whereas another might be playing games much slower. This way they don't get that feeling from a subscription.
+        - It's much eaier for me to do costing - essentially 1 character from Azure AI Speech + other Azure service costs + margins. If I did it monthly I would need to estimate how much an average user would user and charge a monthly fee which might be good for those users who play a lot and bad for those who do not.
+- Here is how I envision the paid model to work:
+    - The user registers on the website - create an account
+    - They get a key that they input into the software
+    - When the software makes an API call to my Azure AI Speech service it checks the account and then sends back the processed audio file.
+    - How to handle authentication? Can every single API call authenticate user?
+    - Every single call checks how many tokens are left in the user's account.
+        - Notifies with a popup when the tokens are finished.
+- As a result of me doing doing a manual selection of the reading zone I am able to offer 2 paid versions:
+    - The cheaper version but it involves data collection of the screenshot and the zone selection - both predetermined and one-off. I will use this data to train a text identification model.
+    - The full price version that does not collect this data.
