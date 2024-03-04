@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QRubberBand
 from PyQt5.QtCore import Qt, QRect, QPoint, QSize, pyqtSignal
-from PyQt5.QtGui import QPainter, QColor, QIcon, QGuiApplication
+from PyQt5.QtGui import QPainter, QColor, QIcon
 
 
 class MainWindow(QWidget):
@@ -63,13 +63,11 @@ class MainWindow(QWidget):
     def start_snipping(self):
         self.snip_widget = ZoneSelector()
         self.snip_widget.showFullScreen()
-        # self.snip_widget.zone_set.connect(self.get_zone_coordinates)
-        self.snip_widget.zone_set.connect(self._spawn_zone)
+        self.snip_widget.zone_set.connect(self.get_zone_coordinates)
+        # self.snip_widget.zone_set.connect(self._spawn_zone)
 
     def _spawn_zone(self):
-        zone_coordinates = self.snip_widget.rect_coordinates
-        zone_coordinates = (zone_coordinates.x(), zone_coordinates.y(), zone_coordinates.width(), zone_coordinates.height())
-        self.zonemanager.create_zone_package(zone_coordinates)
+        pass
 
     def get_zone_coordinates(self):
         self.zone = self.snip_widget.rect_coordinates
@@ -124,50 +122,29 @@ class ZoneSelector(QWidget):
 class ZoneManager:
 
     def __init__(self):
-        self.zone_list = []
-
-    def create_zone_package(self, zone_coordinates):
-        self.determine_zone_clash()
-        zone_package = ZonePackage(zone_coordinates)
-        zone_package.show()
-        self.zone_list.append(zone_package)
-
-    def determine_zone_clash(self):
         pass
 
 
 class ZonePackage:
-    DISTANCE = 70
 
     def __init__(self, zone_coordinates: tuple):
-        self.zone = ZoneBorder(zone_coordinates)
-        # controls_coordinates = self.calculate_controls_spawn_location(zone_coordinates)
-        controls_coordinates = self._simple_controls_location(zone_coordinates)
-        self.controls = ZoneControls(controls_coordinates)
+        
+        pass
 
-    def _simple_controls_location(self, zone_coordinates):
-        x, y, w, h = zone_coordinates
-        X = x
-        Y = y - self.DISTANCE
-        return (X, Y)
-
-    def calculate_controls_spawn_location(self, zone_coordinates):
-        screen = QGuiApplication.primaryScreen()
-        screen_rect = screen.geometry()
-        _, _, W, H = screen_rect
-        x, y, w, h = zone_coordinates
-        # TOP, BOTTOM, LEFT, RIGHT spawn logic
-        return
+    def calculate_controls_spawn_location(self):
+        pass
 
     def show(self):
-        self.zone.show()
-        self.controls.show()
+        pass
 
 
 class ZoneBorder(QWidget):
-    def __init__(self, zone_coordinates):
+    def __init__(self, x, y, w, h):
         super().__init__()
-        self.x, self.y, self.w, self.h = zone_coordinates
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
         self.initUI()
 
     def initUI(self):
@@ -186,29 +163,26 @@ class ZoneBorder(QWidget):
 
 
 class ZoneControls(QWidget):
-    def __init__(self, spawn_coordinates):
+    def __init__(self):
         super().__init__()
-        self.x, self.y = spawn_coordinates
         self.initUI()
 
-    def initUI(self):
+    def initUI(self, x, y):
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.Tool | Qt.FramelessWindowHint)  # Always on top, no title bar
-        self.setGeometry(self.x, self.y, 100, 50)  # Position and size, adjusted to appear near the first window
+        self.setGeometry(x, y, 100, 50)  # Position and size, adjusted to appear near the first window
         
-        self.play_pause = QPushButton(self)
-        self.play_pause.setIcon(QIcon('assets/play-icon.png'))
-        self.play_pause.setGeometry(QRect(10, 10, 30, 30))
-        self.play_pause.setIconSize(QSize(16,16))
+        self.play_pause = QPushButton('Play', self)
         self.play_pause.clicked.connect(self.play_button_rotation)
-        self.play_pause.setToolTip('[<b>PLACEHOLDER<b>]')
         # btn.resize(btn.sizeHint())
         # btn.move(0, 0)  # Position inside the button window
+        self.play_pause.setGeometry(QRect(10, 10, 80, 30))
+        self.play_pause.setToolTip('[<b>PLACEHOLDER<b>]')
 
-        # self.add_stop = QPushButton('Add to Queue', self)
-        # self.add_stop.clicked.connect(self.stop_button_rotation)
+        self.add_stop = QPushButton('Add to Queue', self)
+        self.add_stop.clicked.connect(self.stop_button_rotation)
 
-        # self.add_stop = QPushButton('Remove Zone', self)
-        # self.add_stop.clicked.connect(self.remove_zone)
+        self.add_stop = QPushButton('Remove Zone', self)
+        self.add_stop.clicked.connect(self.remove_zone)
         
         
     def play_button_rotation(self):

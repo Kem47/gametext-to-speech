@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication
-from gui_elements import Window, ZoneBorder, ZoneControls
+from gui_elements import MainWindow, ZoneBorder, ZoneControls
 import sys
 
 def main():
@@ -7,10 +7,10 @@ def main():
         print(window.zone)
 
     app = QApplication(sys.argv)
-    window = Window()
+    window = MainWindow()
     window.show()
-    window.zone_set.connect(test_print_zone)
     sys.exit(app.exec_())
+
 
 def upon_launch():
     # Intro screen
