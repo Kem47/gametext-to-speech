@@ -3,6 +3,10 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QRubberBand
 from PyQt5.QtCore import Qt, QRect, QPoint, QSize, pyqtSignal
 from PyQt5.QtGui import QPainter, QColor, QIcon, QGuiApplication
 
+from PIL import ImageQt
+
+from ocr_tts import Reader
+
 
 class MainWindow(QWidget):
     zone_set = pyqtSignal()
@@ -64,14 +68,14 @@ class MainWindow(QWidget):
         self.snip_widget = ZoneSelector()
         self.snip_widget.showFullScreen()
         # self.snip_widget.zone_set.connect(self.get_zone_coordinates)
-        self.snip_widget.zone_set.connect(self._spawn_zone)
+        self.snip_widget.zone_set.connect(self.spawn_zone)
 
-    def _spawn_zone(self):
+    def spawn_zone(self):
         zone_coordinates = self.snip_widget.rect_coordinates
         zone_coordinates = (zone_coordinates.x(), zone_coordinates.y(), zone_coordinates.width(), zone_coordinates.height())
         self.zonemanager.create_zone_package(zone_coordinates)
 
-    def get_zone_coordinates(self):
+    def _get_zone_coordinates(self):
         self.zone = self.snip_widget.rect_coordinates
         self.zone_box = ZoneBorder(self.zone.x(), self.zone.y(), self.zone.width(), self.zone.height())
         self.zone_box.show()
@@ -143,7 +147,7 @@ class ZonePackage:
         self.zone = ZoneBorder(zone_coordinates)
         # controls_coordinates = self.calculate_controls_spawn_location(zone_coordinates)
         controls_coordinates = self._simple_controls_location(zone_coordinates)
-        self.controls = ZoneControls(controls_coordinates)
+        self.controls = ZoneControls(controls_coordinates, zone_coordinates)
 
     def _simple_controls_location(self, zone_coordinates):
         x, y, w, h = zone_coordinates
@@ -162,6 +166,9 @@ class ZonePackage:
     def show(self):
         self.zone.show()
         self.controls.show()
+
+    def destroy(self):
+        pass
 
 
 class ZoneBorder(QWidget):
@@ -186,9 +193,11 @@ class ZoneBorder(QWidget):
 
 
 class ZoneControls(QWidget):
-    def __init__(self, spawn_coordinates):
+    def __init__(self, spawn_coordinates, zone_coordinates):
         super().__init__()
         self.x, self.y = spawn_coordinates
+        self.reader = Reader(zone_coordinates)
+        self.initScreen()
         self.initUI()
 
     def initUI(self):
@@ -210,6 +219,9 @@ class ZoneControls(QWidget):
         # self.add_stop = QPushButton('Remove Zone', self)
         # self.add_stop.clicked.connect(self.remove_zone)
         
+    def initScreen(self, zone_coordinates):
+        self.screen = app.primaryScreen()
+        self.x, self.y, self.w, self.h = zone_coordinates
         
     def play_button_rotation(self):
         if self.play_pause.text() == 'Play':
@@ -221,11 +233,17 @@ class ZoneControls(QWidget):
             self.play_pause.setText('Play')
             self.add_stop.setText('Add to Queue')
 
+    def screenshot(self):
+        screenshot = self.screen.grabWindow(0, self.x, self.y, self.w, self.h)
+        screenshot = ImageQt.fromqpixmap(screenshot)
+        return screenshot
+
     def play(self):
-        pass
+        screenshot = self.screenshot()
+        self.reader.play(screenshot)
 
     def pause(self):
-        pass
+        self.reader.pause()
     
     def stop_button_rotation(self):
         pass

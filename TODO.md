@@ -43,7 +43,7 @@ Thoughts:
 - Have an always on top button somewhere on screen that enables or disables the system.
     - It will disable the drawing of bounding boxes.
 - Upon launch there should be a window that pulls a message from backend. This is a message from me about updates and other things.
-
+- What do I do with multiple monitor setups?
 
 Interface algorith:
 - Open voice choice window with voice samples
