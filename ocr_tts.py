@@ -7,8 +7,10 @@ class Reader:
         self.ocr = OCR()
         self.tts = TTS()
 
-    def play(self, screenshot):
-        pass
+    def play(self, image):
+        text = self.ocr.image_to_string(image)
+        
+        
 
     def pause(self):
         pass
