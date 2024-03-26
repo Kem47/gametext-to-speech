@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt, QRect, QPoint, QSize, pyqtSignal
 from PyQt5.QtGui import QPainter, QColor, QIcon, QGuiApplication
 
 from PIL import ImageQt
+import pyautogui
 
 from ocr_tts import Reader
 
@@ -196,8 +197,9 @@ class ZoneControls(QWidget):
     def __init__(self, spawn_coordinates, zone_coordinates):
         super().__init__()
         self.x, self.y = spawn_coordinates
-        self.reader = Reader(zone_coordinates)
-        self.initScreen()
+        self.reader = Reader()
+        # self.x, self.y, self.w, self.h = zone_coordinates
+        self.zone_coordinates = zone_coordinates
         self.initUI()
 
     def initUI(self):
@@ -210,6 +212,7 @@ class ZoneControls(QWidget):
         self.play_pause.setIconSize(QSize(16,16))
         self.play_pause.clicked.connect(self.play_button_rotation)
         self.play_pause.setToolTip('[<b>PLACEHOLDER<b>]')
+        self.play_pause_flag = 'play'
         # btn.resize(btn.sizeHint())
         # btn.move(0, 0)  # Position inside the button window
 
@@ -218,28 +221,25 @@ class ZoneControls(QWidget):
 
         # self.add_stop = QPushButton('Remove Zone', self)
         # self.add_stop.clicked.connect(self.remove_zone)
-        
-    def initScreen(self, zone_coordinates):
-        self.screen = app.primaryScreen()
-        self.x, self.y, self.w, self.h = zone_coordinates
-        
+                
     def play_button_rotation(self):
-        if self.play_pause.text() == 'Play':
+        if self.play_pause_flag == 'play':
             self.play()
-            self.play_pause.setText('Pause')
-            self.add_stop.setText('Stop')
+            self.play_pause_flag = 'pause'
+            # self.add_stop.setText('Stop')
         else:
             self.pause()
-            self.play_pause.setText('Play')
-            self.add_stop.setText('Add to Queue')
+            self.play_pause_flag = 'play'
+            # self.add_stop.setText('Add to Queue')
 
-    def screenshot(self):
+    def _screenshot(self):
         screenshot = self.screen.grabWindow(0, self.x, self.y, self.w, self.h)
         screenshot = ImageQt.fromqpixmap(screenshot)
         return screenshot
 
     def play(self):
-        screenshot = self.screenshot()
+        print("Started \"Zone Play\"")
+        screenshot = pyautogui.screenshot(region=self.zone_coordinates)
         self.reader.play(screenshot)
 
     def pause(self):

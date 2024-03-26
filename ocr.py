@@ -14,8 +14,6 @@ class OCR:
         else:
             print('Operating system not supported')
 
-    image_file = '../text_images/pfkm-4.jpg'
-
     def image_to_string(self, image):
         text = pt.image_to_string(image)
         text = text.replace('\n', ' ')

@@ -1,6 +1,15 @@
+# TODO
+
+- GUI
+  - 
+- OCR
+- TTS
 
 
-# Interface
+
+# IDEAS
+
+## Interface
 Thoughts:
 - The user upon the launch of the game highlights the area where text is to be detected.
 - An automatic system that scans the screen and detects text.
@@ -44,6 +53,10 @@ Thoughts:
     - It will disable the drawing of bounding boxes.
 - Upon launch there should be a window that pulls a message from backend. This is a message from me about updates and other things.
 - What do I do with multiple monitor setups?
+- Uitilise SSML (Speech Synthesis Markup Language)
+  - Run the OCR-output text through a LLM to get SSML output and then feed taht into TTS.
+- Utilise LLM to autocorrect the text. Instruct it to have minimal changes in order to smooth out the rough edges of the OCR.
+  - How expensive is running an LLM request for every piece of text, essentially pairing TTS and LLM.
 
 Interface algorith:
 - Open voice choice window with voice samples
@@ -60,7 +73,7 @@ Interface algorith:
 
 
 
-# Text-to-speech
+## Text-to-speech
 Options:
 - Free out-the-box implementation like gTTS
 - A pretrained model that is used.
@@ -73,7 +86,7 @@ Options:
 
 
 
-# General 
+## General 
 
 - Free Python solution that is open-source. This will be published on my GitHub. It will use a free TTS solution and have an additional ability to plug in your own Azure AI Speech service. This version requires the person to know Python and run it from the terminal and have all the right packages.
 Features:
@@ -103,3 +116,8 @@ Features:
 - As a result of me doing doing a manual selection of the reading zone I am able to offer 2 paid versions:
     - The cheaper version but it involves data collection of the screenshot and the zone selection - both predetermined and one-off. I will use this data to train a text identification model.
     - The full price version that does not collect this data.
+- 4 paid versions:
+  1. single Azure AI Voice
+  2. choice of mutliple Azure AI Voices
+  3. Open AI Voice
+  4. Choice of Open AI Voices
